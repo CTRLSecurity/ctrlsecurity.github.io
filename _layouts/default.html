@@ -25,18 +25,16 @@
 <header class="nav"><div class="wrap">
 <a class="brand" href="{{ base }}"><img src="{{ '/assets/logo-icon.png' | relative_url }}" alt=""><span>CTRL<b>+</b>SEC</span></a>
 <nav class="nav-links"><a href="{{ base }}#servicos" data-i18n="nav.services">Serviços</a><a href="{{ base }}#metodo" data-i18n="nav.method">Método</a><a href="{{ base }}#manifesto" data-i18n="nav.manifesto">Manifesto</a><a href="{{ '/blog/' | relative_url }}" data-i18n="nav.blog">Blog</a><a href="{{ base }}#contato" data-i18n="nav.contact">Contato</a></nav>
-<div class="nav-right"><div class="lang" data-l="pt"><span class="pill"></span><button data-lang="pt" class="on">PT</button><button data-lang="en">EN</button></div><a class="btn btn-blue" href="{{ base }}#contato" data-i18n="nav.cta">Fale com um especialista</a><button class="burger" aria-label="Menu"><span></span><span></span></button></div>
+<div class="nav-right"><div class="lang" data-l="pt"><span class="pill"></span><button data-lang="pt" class="on">PT</button><button data-lang="en">EN</button></div><a class="btn btn-blue" href="{{ base }}#contato" data-i18n="nav.cta">Fale com um especialista</a><button class="burger" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button></div>
 </div></header>
-<div class="mobile-menu"><a href="{{ base }}#servicos" data-i18n="nav.services">Serviços</a><a href="{{ base }}#metodo" data-i18n="nav.method">Método</a><a href="{{ base }}#manifesto" data-i18n="nav.manifesto">Manifesto</a><a href="{{ '/blog/' | relative_url }}" data-i18n="nav.blog">Blog</a><a href="{{ base }}#contato" data-i18n="nav.contact">Contato</a></div>
+<div class="mobile-menu" id="mobile-menu" inert><a href="{{ base }}#servicos" data-i18n="nav.services">Serviços</a><a href="{{ base }}#metodo" data-i18n="nav.method">Método</a><a href="{{ base }}#manifesto" data-i18n="nav.manifesto">Manifesto</a><a href="{{ '/blog/' | relative_url }}" data-i18n="nav.blog">Blog</a><a href="{{ base }}#contato" data-i18n="nav.contact">Contato</a></div>
 {{ content }}
 <footer class="dark"><div class="wrap">
 <div class="foot">
 <div><a class="brand" href="{{ base }}"><img src="{{ '/assets/logo-icon.png' | relative_url }}" alt=""><span>CTRL<b>+</b>SEC</span></a><p data-i18n="f.tag"></p></div>
 <div><h4 data-i18n="f.svc"></h4><ul><li><a href="{{ base }}#servicos">Pentest</a></li><li><a href="{{ base }}#servicos">AppSec</a></li><li><a href="{{ base }}#servicos" data-i18n="s3.t"></a></li><li><a href="{{ base }}#servicos" data-i18n="s4.t"></a></li><li><a href="{{ base }}#servicos" data-i18n="s5.t"></a></li></ul></div>
 <div><h4 data-i18n="f.co"></h4><ul><li><a href="{{ base }}#manifesto">Manifesto</a></li><li><a href="{{ '/blog/' | relative_url }}">Blog</a></li><li><a href="{{ base }}#contato" data-i18n="f.contact"></a></li></ul></div>
-<div><h4>Disclosure</h4><ul><li><a href="#">security.txt</a></li><li><a href="#">PGP Key</a></li><li><a href="#" data-i18n="f.policy"></a></li></ul></div>
 </div>
-<div class="big-word">CTRL<b>+</b>SEC</div>
 <div class="foot-bottom"><span>© <span id="year">2026</span> CTRL+SEC · <span data-i18n="f.rights"></span></span><span class="mono">ctrlsecurity.github.io</span></div>
 </div></footer>
 <script src="{{ '/c2/c2.js' | relative_url }}"></script>

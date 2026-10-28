@@ -73,6 +73,7 @@ function render(){
   buildManifesto();
   $$('.filters button[data-tag=""]').forEach(b=>b.click());
   $$('.lang').forEach(l=>{l.dataset.l=lang;$$('button',l).forEach(b=>b.classList.toggle('on',b.dataset.lang===lang))});
+  updateMenuLabel();
   restartTerm();
 }
 function setLang(l){
@@ -142,12 +143,27 @@ function onScroll(){
 addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);
 
 /* burger */
-const bgr=$('.burger');if(bgr)bgr.addEventListener('click',()=>document.body.classList.toggle('menu-open'));
-$$('.mobile-menu a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('menu-open')));
+const bgr=$('.burger'),mobileMenu=$('.mobile-menu');
+function updateMenuLabel(){
+  if(!bgr)return;
+  const open=document.body.classList.contains('menu-open');
+  bgr.setAttribute('aria-label',lang==='pt'?(open?'Fechar menu':'Abrir menu'):(open?'Close menu':'Open menu'));
+}
+function setMenu(open){
+  if(!bgr||!mobileMenu)return;
+  document.body.classList.toggle('menu-open',open);
+  bgr.setAttribute('aria-expanded',String(open));
+  mobileMenu.inert=!open;
+  updateMenuLabel();
+}
+if(bgr)bgr.addEventListener('click',()=>setMenu(!document.body.classList.contains('menu-open')));
+$$('.mobile-menu a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('menu-open')){setMenu(false);bgr.focus()}});
+addEventListener('resize',()=>{if(innerWidth>1120&&document.body.classList.contains('menu-open'))setMenu(false)});
 
 /* hero pointer */
 const hero=$('.hero'),lock=$('.lock');
-if(!reduce&&matchMedia('(pointer:fine)').matches){
+if(!reduce&&matchMedia('(pointer:fine) and (hover:hover)').matches){
   if(hero&&lock){hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect();const x=e.clientX-r.left,y=e.clientY-r.top;hero.style.setProperty('--mx',x+'px');hero.style.setProperty('--my',y+'px');const nx=x/r.width-.5,ny=y/r.height-.5;lock.style.transform='translate('+nx*-24+'px,'+ny*-24+'px) rotateY('+nx*14+'deg) rotateX('+ny*-14+'deg)'});
   hero.addEventListener('pointerleave',()=>lock.style.transform='');}
   $$('[data-magnet]').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.transform='translate('+(e.clientX-r.left-r.width/2)*.25+'px,'+(e.clientY-r.top-r.height/2)*.35+'px)'});b.addEventListener('pointerleave',()=>b.style.transform='')});
