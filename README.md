@@ -1,11 +1,11 @@
-# CTRL+SEC — ctrl-sec.github.io
+# CTRL+SEC | ctrlsecurity.github.io
 
 Site em Jekyll (nativo do GitHub Pages).
 
 ## Publicar
-1. Crie o repositório `ctrl-sec.github.io` e envie todo o conteúdo desta pasta para a raiz.
+1. Envie todo o conteúdo desta pasta para a raiz do repositório `CTRLSecurity/ctrlsecurity.github.io`.
 2. Settings → Pages → Source: **Deploy from a branch** → `main` / `(root)`.
-3. Em ~1 min o site estará em https://ctrl-sec.github.io
+3. Após a publicação, o site estará em https://ctrlsecurity.github.io
 
 ## Escrever um post
 Crie um arquivo em `_posts/` com o nome `AAAA-MM-DD-slug.md`:

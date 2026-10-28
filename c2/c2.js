@@ -3,23 +3,20 @@ const I18N={
 pt:{
 'nav.services':'Serviços','nav.method':'Método','nav.manifesto':'Manifesto','nav.blog':'Blog','nav.contact':'Contato','nav.cta':'Fale com um especialista <span class="arr">→</span>',
 'hero.eyebrow':'Cyber Security · Est. 2024','hero.h1':['Segurança','como <em>controle.</em>'],
-'hero.sub':'Pentest, forense, AppSec, testes em LLM/AI e treinamento — entregues por um time que pensa como atacante e constrói como engenheiro.',
+'hero.sub':'Pentest, forense, AppSec, testes em LLM/AI e treinamento. Um time que pensa como atacante e constrói como engenheiro.',
 'hero.cta1':'Agendar diagnóstico <span class="arr">→</span>','hero.cta2':'Testar meu LLM/AI',
 'svc.eyebrow':'[ §02 ] Serviços','svc.h2':['Cinco frentes.','Uma <em>disciplina.</em>'],
-'svc.lead':'Não somos um marketplace de ferramentas. Somos um time enxuto que entrega profundidade onde importa — do código ao modelo.',
-'s1.t':'Pentest & Red Team','s1.d':'Simulamos adversários reais em web, API, mobile, cloud e engenharia social. Entregamos o que poderia dar errado — antes que dê.','s1.g':['Web & API','Mobile','Cloud','Red team'],
+'svc.lead':'Somos um time enxuto que entrega profundidade onde importa, do código ao modelo.',
+'s1.t':'Pentest & Red Team','s1.d':'Simulamos adversários reais em web, API, mobile, cloud e engenharia social. Mostramos o que poderia dar errado antes que aconteça.','s1.g':['Web & API','Mobile','Cloud','Red team'],
 's2.t':'AppSec','s2.d':'Revisão de código, threat modeling e SAST/DAST no pipeline. Segurança que vive no repositório, não no PDF.','s2.g':['Code review','Threat modeling','SAST / DAST','Secure SDLC'],
 's3.t':'Testes em LLM/AI','s3.b':'Novo','s3.d':'Red teaming de modelos e agentes: prompt injection, jailbreak, vazamento de dados e abuso de ferramentas. Seu modelo também é superfície de ataque.','s3.g':['Prompt injection','Jailbreak','Data leakage','OWASP LLM Top 10'],
 's4.t':'Forense','s4.d':'Investigação digital com rigor pericial: análise de memória, disco e logs, reconstrução de linha do tempo e laudo técnico.','s4.g':['Memória & disco','Timeline','Cadeia de custódia','Laudo técnico'],
 's5.t':'Treinamento','s5.d':'CTFs sob medida, workshops para devs e tabletop exercises para liderança. Time preparado é time mais barato.','s5.g':['CTF','Workshops','Tabletop','Mentoria'],
-'m.eyebrow':'[ §03 ] Método','m.h2':['Diagnóstico','em <em>72 horas.</em>'],
+'m.eyebrow':'[ §03 ] Método','m.h2':['Diagnóstico','em <em>72 horas.</em>'],'m.demo':'Demonstração',
 'm.p':'Reconhecimento leve, superfície de ataque mapeada, prioridades claras. Sem compromisso. Sem discurso de venda.',
 'm.c1':'Mapeamento de superfície externa','m.c2':'Bateria OWASP LLM Top 10 em modelos','m.c3':'Relatório priorizado por impacto × esforço',
-'mani.eyebrow':'[ §04 ] Manifesto','mani.text':'Segurança não é um produto que se compra. É uma *disciplina* que se pratica — todo dia, em cada commit, em cada prompt, em cada decisão de arquitetura.',
+'mani.eyebrow':'[ §04 ] Manifesto','mani.text':'Segurança não é um produto que se compra. É uma *disciplina* que se pratica todos os dias, em cada commit, em cada prompt e em cada decisão de arquitetura.',
 'b.eyebrow':'[ §05 ] Publicações','b.h2':'Do campo.','b.all':'Arquivo completo <span class="arr">→</span>','b.read':'de leitura',
-'p1.tag':'Threat Report','p1.t':'Três padrões em 40 pentests de 2025','p1.e':'CORS permissivo, JWT sem rotação e endpoints administrativos por IP. A mesma ferida, costurada diferente.',
-'p2.tag':'AI Security','p2.t':'Prompt injection em produção: 5 casos reais','p2.e':'Quando o PDF anexado vira instrução — e o agente obedece. O que encontramos testando assistentes corporativos.',
-'p3.tag':'Forense','p3.t':'A linha do tempo que o atacante tentou apagar','p3.e':'Como reconstruímos 9 dias de acesso a partir de artefatos que sobreviveram à limpeza.',
 'c.eyebrow':'[ §06 ] Próximo movimento','c.h2':['Pronto pra','<em>testar</em> suas','defesas?'],'c.btn':'Agendar diagnóstico gratuito <span class="arr">→</span>','c.note':'resposta em 4h úteis',
 'f.tag':'Cyber security sob medida para times que levam ameaças a sério.','f.svc':'Serviços','f.co':'Empresa','f.careers':'Carreiras','f.contact':'Contato','f.policy':'Política responsável','f.rights':'Todos os direitos reservados',
 'bl.eyebrow':'Blog · Publicações','bl.h1':['Do','<em>campo.</em>'],'bl.lead':'Relatórios, guias e notas de campo sobre pentest, AppSec, forense e segurança de LLM/AI.','bl.allf':'Todos',
@@ -28,23 +25,20 @@ pt:{
 en:{
 'nav.services':'Services','nav.method':'Method','nav.manifesto':'Manifesto','nav.blog':'Blog','nav.contact':'Contact','nav.cta':'Talk to an expert <span class="arr">→</span>',
 'hero.eyebrow':'Cyber Security · Est. 2024','hero.h1':['Security','as <em>control.</em>'],
-'hero.sub':'Pentest, forensics, AppSec, LLM/AI testing and training — delivered by a team that thinks like an attacker and builds like an engineer.',
+'hero.sub':'Pentest, forensics, AppSec, LLM/AI testing and training. A team that thinks like an attacker and builds like an engineer.',
 'hero.cta1':'Book a diagnosis <span class="arr">→</span>','hero.cta2':'Test my LLM/AI',
 'svc.eyebrow':'[ §02 ] Services','svc.h2':['Five fronts.','One <em>discipline.</em>'],
-'svc.lead':"We're not a tooling marketplace. We're a lean team delivering depth where it matters — from code to model.",
-'s1.t':'Pentest & Red Team','s1.d':'We simulate real adversaries across web, API, mobile, cloud and social engineering. We show what could go wrong — before it does.','s1.g':['Web & API','Mobile','Cloud','Red team'],
+'svc.lead':"We're a lean team delivering depth where it matters, from code to model.",
+'s1.t':'Pentest & Red Team','s1.d':'We simulate real adversaries across web, API, mobile, cloud and social engineering. We show what could go wrong before it happens.','s1.g':['Web & API','Mobile','Cloud','Red team'],
 's2.t':'AppSec','s2.d':'Code review, threat modeling and SAST/DAST in the pipeline. Security that lives in the repo, not in a PDF.','s2.g':['Code review','Threat modeling','SAST / DAST','Secure SDLC'],
 's3.t':'LLM/AI Testing','s3.b':'New','s3.d':'Red teaming for models and agents: prompt injection, jailbreaks, data leakage and tool abuse. Your model is attack surface too.','s3.g':['Prompt injection','Jailbreak','Data leakage','OWASP LLM Top 10'],
 's4.t':'Forensics','s4.d':'Digital investigation with expert-witness rigor: memory, disk and log analysis, timeline reconstruction and technical report.','s4.g':['Memory & disk','Timeline','Chain of custody','Expert report'],
 's5.t':'Training','s5.d':'Custom CTFs, developer workshops and tabletop exercises for leadership. A prepared team is a cheaper team.','s5.g':['CTF','Workshops','Tabletop','Mentorship'],
-'m.eyebrow':'[ §03 ] Method','m.h2':['Diagnosis','in <em>72 hours.</em>'],
+'m.eyebrow':'[ §03 ] Method','m.h2':['Diagnosis','in <em>72 hours.</em>'],'m.demo':'Illustrative demo',
 'm.p':'Light recon, attack surface mapped, clear priorities. No commitment. No sales pitch.',
 'm.c1':'External surface mapping','m.c2':'OWASP LLM Top 10 battery on models','m.c3':'Report prioritized by impact × effort',
-'mani.eyebrow':'[ §04 ] Manifesto','mani.text':"Security isn't a product you buy. It's a *discipline* you practice — every day, in every commit, in every prompt, in every architecture decision.",
+'mani.eyebrow':'[ §04 ] Manifesto','mani.text':"Security isn't a product you buy. It's a *discipline* you practice every day, in every commit, in every prompt and in every architecture decision.",
 'b.eyebrow':'[ §05 ] Writing','b.h2':'From the field.','b.all':'Full archive <span class="arr">→</span>','b.read':'read',
-'p1.tag':'Threat Report','p1.t':'Three patterns across 40 pentests of 2025','p1.e':'Permissive CORS, JWTs without rotation and admin endpoints by IP. Same wound, sewn differently.',
-'p2.tag':'AI Security','p2.t':'Prompt injection in production: 5 real cases','p2.e':'When the attached PDF becomes an instruction — and the agent obeys. What we found testing corporate assistants.',
-'p3.tag':'Forensics','p3.t':'The timeline the attacker tried to erase','p3.e':'How we rebuilt 9 days of access from artifacts that survived the cleanup.',
 'c.eyebrow':'[ §06 ] Next move','c.h2':['Ready to','<em>test</em> your','defenses?'],'c.btn':'Book a free diagnosis <span class="arr">→</span>','c.note':'reply within 4 business hours',
 'f.tag':'Bespoke cyber security for teams that take threats seriously.','f.svc':'Services','f.co':'Company','f.careers':'Careers','f.contact':'Contact','f.policy':'Responsible policy','f.rights':'All rights reserved',
 'bl.eyebrow':'Blog · Writing','bl.h1':['From the','<em>field.</em>'],'bl.lead':'Reports, guides and field notes on pentest, AppSec, forensics and LLM/AI security.','bl.allf':'All',
@@ -56,8 +50,8 @@ recon:{pt:[['p','$ '],['','ctrlsec recon --target acme.corp\n'],['d','[00:00] �
 en:[['p','$ '],['','ctrlsec recon --target acme.corp\n'],['d','[00:00] › mapping external surface...\n'],['d','[00:12] › 47 hosts, 142 ports, 8 subdomains\n'],['d','[00:34] › scanning TLS configurations...\n'],['w','[!] 3 certificates expiring in < 30d\n'],['w','[!] TLS 1.0 enabled on api.acme.corp\n'],['x','[x] exposed .git/ on static.acme.corp\n'],['p','\nreport'],['',' › '],['ok','12 critical / 34 high / 89 medium\n'],['d','prioritized by impact × exploitability\n\n'],['p','$ ']]},
 llm:{pt:[['p','$ '],['','ctrlsec llm-probe --model acme-assistant --suite owasp-llm\n'],['d','[00:00] › carregando 412 payloads (LLM01–LLM10)...\n'],['d','[00:41] › LLM01 injeção indireta via PDF anexado...\n'],['w','[!] system prompt vazado em 3/40 tentativas\n'],['x','[x] tool call não autorizada: send_email()\n'],['w','[!] PII retornada após jailbreak por role-play\n'],['d','[03:12] › LLM06 testando exfiltração via RAG...\n'],['x','[x] documentos de outro tenant no contexto\n'],['p','\nreport'],['',' › '],['ok','4 critical / 9 high / 17 medium\n\n'],['p','$ ']],
 en:[['p','$ '],['','ctrlsec llm-probe --model acme-assistant --suite owasp-llm\n'],['d','[00:00] › loading 412 payloads (LLM01–LLM10)...\n'],['d','[00:41] › LLM01 indirect injection via attached PDF...\n'],['w','[!] system prompt leaked in 3/40 attempts\n'],['x','[x] unauthorized tool call: send_email()\n'],['w','[!] PII returned after role-play jailbreak\n'],['d','[03:12] › LLM06 testing exfiltration via RAG...\n'],['x','[x] other-tenant documents in context\n'],['p','\nreport'],['',' › '],['ok','4 critical / 9 high / 17 medium\n\n'],['p','$ ']]},
-forensic:{pt:[['p','$ '],['','ctrlsec dfir --image srv-db01.e01 --mem srv-db01.raw\n'],['d','[00:00] › verificando hash SHA-256... ok\n'],['d','[00:08] › cadeia de custódia registrada #CC-2026-114\n'],['d','[01:22] › extraindo processos da memória...\n'],['w','[!] processo órfão: svch0st.exe (PID 4412)\n'],['x','[x] beacon C2 a cada 300s → 185.**.**.12\n'],['d','[04:51] › reconstruindo timeline (MFT, evtx, prefetch)\n'],['w','[!] logs limpos em 14/10 03:12 — artefatos recuperados\n'],['p','\ntimeline'],['',' › '],['ok','acesso inicial 05/10 · 9 dias de permanência\n\n'],['p','$ ']],
-en:[['p','$ '],['','ctrlsec dfir --image srv-db01.e01 --mem srv-db01.raw\n'],['d','[00:00] › verifying SHA-256 hash... ok\n'],['d','[00:08] › chain of custody logged #CC-2026-114\n'],['d','[01:22] › extracting processes from memory...\n'],['w','[!] orphan process: svch0st.exe (PID 4412)\n'],['x','[x] C2 beacon every 300s → 185.**.**.12\n'],['d','[04:51] › rebuilding timeline (MFT, evtx, prefetch)\n'],['w','[!] logs wiped 10/14 03:12 — artifacts recovered\n'],['p','\ntimeline'],['',' › '],['ok','initial access 10/05 · 9 days dwell time\n\n'],['p','$ ']]}
+forensic:{pt:[['p','$ '],['','ctrlsec dfir --image srv-db01.e01 --mem srv-db01.raw\n'],['d','[00:00] › verificando hash SHA-256... ok\n'],['d','[00:08] › cadeia de custódia registrada #CC-2026-114\n'],['d','[01:22] › extraindo processos da memória...\n'],['w','[!] processo órfão: svch0st.exe (PID 4412)\n'],['x','[x] beacon C2 a cada 300s → 185.**.**.12\n'],['d','[04:51] › reconstruindo timeline (MFT, evtx, prefetch)\n'],['w','[!] logs limpos em 14/10 03:12, artefatos recuperados\n'],['p','\ntimeline'],['',' › '],['ok','acesso inicial 05/10 · 9 dias de permanência\n\n'],['p','$ ']],
+en:[['p','$ '],['','ctrlsec dfir --image srv-db01.e01 --mem srv-db01.raw\n'],['d','[00:00] › verifying SHA-256 hash... ok\n'],['d','[00:08] › chain of custody logged #CC-2026-114\n'],['d','[01:22] › extracting processes from memory...\n'],['w','[!] orphan process: svch0st.exe (PID 4412)\n'],['x','[x] C2 beacon every 300s → 185.**.**.12\n'],['d','[04:51] › rebuilding timeline (MFT, evtx, prefetch)\n'],['w','[!] logs wiped 10/14 03:12, artifacts recovered\n'],['p','\ntimeline'],['',' › '],['ok','initial access 10/05 · 9 days dwell time\n\n'],['p','$ ']]}
 };
 
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -69,6 +63,7 @@ const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelecto
 function render(){
   document.documentElement.lang=lang==='pt'?'pt-BR':'en';
   const d=I18N[lang];
+  $$('[data-lang-only]').forEach(el=>{el.hidden=el.dataset.langOnly!==lang});
   $$('[data-i18n]').forEach(el=>{
     const v=d[el.dataset.i18n];if(v==null)return;
     if(el.dataset.mode==='lines'){el.innerHTML=v.map(l=>'<span class="line"><span>'+l+'</span></span>').join('')}
@@ -89,6 +84,17 @@ function setLang(l){
   setTimeout(()=>{render();requestAnimationFrame(()=>document.body.classList.remove('swapping'))},250);
 }
 $$('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+
+/* Keep the contact address out of the static markup and assemble it on click. */
+function contactAddress(){
+  const local=['ctrl','plus','security'].join('.');
+  const domain=['gmail','com'].join('.');
+  return local+String.fromCharCode(64)+domain;
+}
+$$('[data-contact-link]').forEach(link=>link.addEventListener('click',e=>{
+  e.preventDefault();
+  location.href='mailto:'+contactAddress();
+}));
 
 /* manifesto */
 function buildManifesto(){

@@ -1,6 +1,6 @@
 title: CTRL+SEC
 description: Pentest, forense, AppSec, testes em LLM/AI e treinamento.
-url: "https://ctrl-sec.github.io"
+url: "https://ctrlsecurity.github.io"
 baseurl: ""
 permalink: /blog/:title/
 markdown: kramdown
