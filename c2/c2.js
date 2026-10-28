@@ -16,10 +16,10 @@ pt:{
 'm.p':'Reconhecimento leve, superfície de ataque mapeada, prioridades claras. Sem compromisso. Sem discurso de venda.',
 'm.c1':'Mapeamento de superfície externa','m.c2':'Bateria OWASP LLM Top 10 em modelos','m.c3':'Relatório priorizado por impacto × esforço',
 'mani.eyebrow':'[ §04 ] Manifesto','mani.text':'Segurança não é um produto que se compra. É uma *disciplina* que se pratica todos os dias, em cada commit, em cada prompt e em cada decisão de arquitetura.',
-'b.eyebrow':'[ §05 ] Publicações','b.h2':'Do campo.','b.all':'Arquivo completo <span class="arr">→</span>','b.read':'de leitura',
+'b.eyebrow':'[ §05 ] Publicações','b.h2':'Da pesquisa à prática.','b.all':'Arquivo completo <span class="arr">→</span>','b.read':'de leitura',
 'c.eyebrow':'[ §06 ] Próximo movimento','c.h2':['Pronto pra','<em>testar</em> suas','defesas?'],'c.btn':'Agendar diagnóstico gratuito <span class="arr">→</span>','c.note':'resposta em 4h úteis',
 'f.tag':'Cyber security sob medida para times que levam ameaças a sério.','f.svc':'Serviços','f.co':'Empresa','f.careers':'Carreiras','f.contact':'Contato','f.policy':'Política responsável','f.rights':'Todos os direitos reservados',
-'bl.eyebrow':'Blog · Publicações','bl.h1':['Do','<em>campo.</em>'],'bl.lead':'Guias técnicos sobre IIS, segurança de LLM/AI e ferramentas para investigar aplicações com mais rigor.','bl.allf':'Todos',
+'bl.eyebrow':'Blog · Publicações','bl.h1':['Da pesquisa','à <em>prática.</em>'],'bl.lead':'Guias técnicos sobre IIS, segurança de LLM/AI e ferramentas para investigar aplicações com mais rigor.','bl.allf':'Todos',
 'po.back':'← Voltar ao blog','po.prev':'Anterior','po.next':'Próximo','po.ctah':'Quer que a gente teste o seu?','po.ctab':'Fale com um especialista <span class="arr">→</span>'
 },
 en:{
@@ -38,10 +38,10 @@ en:{
 'm.p':'Light recon, attack surface mapped, clear priorities. No commitment. No sales pitch.',
 'm.c1':'External surface mapping','m.c2':'OWASP LLM Top 10 battery on models','m.c3':'Report prioritized by impact × effort',
 'mani.eyebrow':'[ §04 ] Manifesto','mani.text':"Security isn't a product you buy. It's a *discipline* you practice every day, in every commit, in every prompt and in every architecture decision.",
-'b.eyebrow':'[ §05 ] Writing','b.h2':'From the field.','b.all':'Full archive <span class="arr">→</span>','b.read':'read',
+'b.eyebrow':'[ §05 ] Writing','b.h2':'Research into practice.','b.all':'Full archive <span class="arr">→</span>','b.read':'read',
 'c.eyebrow':'[ §06 ] Next move','c.h2':['Ready to','<em>test</em> your','defenses?'],'c.btn':'Book a free diagnosis <span class="arr">→</span>','c.note':'reply within 4 business hours',
 'f.tag':'Bespoke cyber security for teams that take threats seriously.','f.svc':'Services','f.co':'Company','f.careers':'Careers','f.contact':'Contact','f.policy':'Responsible policy','f.rights':'All rights reserved',
-'bl.eyebrow':'Blog · Writing','bl.h1':['From the','<em>field.</em>'],'bl.lead':'Technical guides on IIS, LLM/AI security, and tools for investigating applications with more rigor.','bl.allf':'All',
+'bl.eyebrow':'Blog · Writing','bl.h1':['Research','into <em>practice.</em>'],'bl.lead':'Technical guides on IIS, LLM/AI security, and tools for investigating applications with more rigor.','bl.allf':'All',
 'po.back':'← Back to blog','po.prev':'Previous','po.next':'Next','po.ctah':'Want us to test yours?','po.ctab':'Talk to an expert <span class="arr">→</span>'
 }};
 
@@ -140,7 +140,13 @@ function onScroll(){
   const pr=$('.progress');if(pr){const h=document.documentElement.scrollHeight-innerHeight;pr.style.transform='scaleX('+(h>0?Math.min(1,y/h):0)+')'}
   const spot=$('.hero .spot');if(spot&&!reduce)spot.style.transform='translateY('+y*.25+'px)';
 }
-addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);
+let scrollScheduled=false;
+function scheduleScroll(){
+  if(scrollScheduled)return;
+  scrollScheduled=true;
+  requestAnimationFrame(()=>{scrollScheduled=false;onScroll()});
+}
+addEventListener('scroll',scheduleScroll,{passive:true});addEventListener('resize',scheduleScroll);
 
 /* burger */
 const bgr=$('.burger'),mobileMenu=$('.mobile-menu');
@@ -171,7 +177,7 @@ if(!reduce&&matchMedia('(pointer:fine) and (hover:hover)').matches){
 
 /* telemetry */
 const hex=()=>Math.random().toString(16).slice(2,8).toUpperCase();
-setInterval(()=>{const a=$('#tel-hash'),b=$('#tel-ping');if(a)a.textContent='0x'+hex();if(b)b.textContent=(8+Math.random()*9).toFixed(1)+'ms'},900);
+setInterval(()=>{if(document.hidden)return;const a=$('#tel-hash'),b=$('#tel-ping');if(a)a.textContent='0x'+hex();if(b)b.textContent=(8+Math.random()*9).toFixed(1)+'ms'},900);
 
 /* boot */
 /* blog filters */

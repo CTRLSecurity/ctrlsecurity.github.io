@@ -9,7 +9,7 @@ a.post:hover{color:#fff}
 .page-hero{position:relative;padding:clamp(140px,16vw,200px) 0 clamp(64px,8vw,100px);overflow:hidden}
 .page-hero .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(ellipse at 80% 20%,#000 10%,transparent 65%);mask-image:radial-gradient(ellipse at 80% 20%,#000 10%,transparent 65%)}
 .page-hero .wrap{position:relative}
-.page-hero h1{font-size:clamp(72px,12vw,180px)}
+.page-hero h1{font-size:clamp(60px,9vw,140px)}
 .page-hero .lead{margin-top:32px;color:rgba(255,255,255,.72)}
 .page-hero .line>span{transform:none}
 .filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:48px}
@@ -70,4 +70,4 @@ a.post:hover{color:#fff}
 .post-cta .btn{margin-top:40px}
 @media (max-width:980px){.svc.row{grid-template-columns:minmax(0,1fr) 40px;gap:12px 20px}.row .date,.row .chip{grid-column:1}.row .meta-r{display:flex;gap:14px;align-items:center;grid-column:1}.row .row-main{grid-column:1}.row .go{grid-row:1/3;grid-column:2;align-self:start}}
 @media (min-width:981px){.row .meta-r{display:contents}}
-@media (max-width:640px){.pn{grid-template-columns:1fr}.pn .next{grid-column:1}.prose table{display:block;max-width:100%;overflow-x:auto}.prose th,.prose td{min-width:120px}.post-meta{font-size:11px;letter-spacing:.08em}}
+@media (max-width:640px){.page-hero{padding-top:124px}.page-hero h1{font-size:clamp(52px,12vw,76px)}.pn{grid-template-columns:1fr}.pn .next{grid-column:1}.prose table{display:block;max-width:100%;overflow-x:auto}.prose th,.prose td{min-width:120px}.post-meta{font-size:11px;letter-spacing:.08em}}
