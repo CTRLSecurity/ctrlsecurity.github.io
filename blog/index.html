@@ -1,0 +1,21 @@
+---
+layout: default
+title: Blog
+---
+<main>
+<section class="page-hero dark" data-screen-label="Blog">
+<div class="grid-bg"></div>
+<div class="wrap">
+<div class="eyebrow in" data-i18n="bl.eyebrow"></div>
+<h1 class="disp" data-i18n="bl.h1" data-mode="lines"></h1>
+<p class="lead" data-i18n="bl.lead"></p>
+<div class="filters"><button class="on" data-tag="" data-i18n="bl.allf">Todos</button>{% assign langs = "pt,en" | split: "," %}{% for l in langs %}{% assign tags = site.posts | where: "lang", l | map: "tag" | uniq %}{% for t in tags %}<button data-tag="{{ t }}" data-lang-only="{{ l }}">{{ t }}</button>{% endfor %}{% endfor %}</div>
+</div>
+</section>
+<section class="rows-sec light"><div class="wrap">
+<div class="svc-list rows stagger">
+{% for p in site.posts %}<a class="svc row" href="{{ p.url | relative_url }}" data-lang-only="{{ p.lang }}" data-tag="{{ p.tag }}"><span class="meta-r"><span class="date">{{ p.date | date: "%d.%m.%y" }}</span><span class="chip">{{ p.tag }}</span></span><span class="row-main"><h2>{{ p.title }}</h2><p>{{ p.description }}</p></span><span class="go">→</span></a>
+{% endfor %}
+</div>
+</div></section>
+</main>

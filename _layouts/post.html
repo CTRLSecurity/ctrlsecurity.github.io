@@ -1,0 +1,31 @@
+---
+layout: default
+---
+{%- assign same = site.posts | where: "lang", page.lang -%}
+{%- assign idx = 0 -%}
+{%- for p in same -%}{%- if p.url == page.url -%}{%- assign idx = forloop.index0 -%}{%- endif -%}{%- endfor -%}
+{%- assign newer_i = idx | minus: 1 -%}{%- assign older_i = idx | plus: 1 -%}
+{%- assign newer = nil -%}{%- if idx > 0 -%}{%- assign newer = same[newer_i] -%}{%- endif -%}
+{%- assign older = same[older_i] -%}
+<div class="progress"></div>
+<main class="post-page">
+<header class="post-hero dark" data-screen-label="Post">
+<div class="wrap narrow">
+<a class="link-u back" href="{{ '/blog/' | relative_url }}" data-i18n="po.back">← Blog</a>
+<div class="post-meta"><span>{{ page.tag }}</span><span>{{ page.date | date: "%d.%m.%Y" }}</span><span>{{ page.read }} min</span></div>
+<h1 class="disp post-title">{{ page.title }}</h1>
+{% if page.description %}<p class="post-lead">{{ page.description }}</p>{% endif %}
+</div>
+<div class="post-cover cover-{{ page.cover | default: 'blue' }}"></div>
+</header>
+<section class="post-body light">
+<article class="prose">
+{{ content }}
+</article>
+{% if older or newer %}<nav class="pn">{% if older %}<a href="{{ older.url | relative_url }}"><small data-i18n="po.prev">Anterior</small><strong>{{ older.title }}</strong></a>{% endif %}{% if newer %}<a class="next" href="{{ newer.url | relative_url }}"><small data-i18n="po.next">Próximo</small><strong>{{ newer.title }}</strong></a>{% endif %}</nav>{% endif %}
+</section>
+<section class="post-cta dark"><div class="wrap">
+<h2 class="disp reveal" data-i18n="po.ctah"></h2>
+<a class="btn btn-blue btn-xl reveal" href="{{ '/' | relative_url }}#contato" data-i18n="po.ctab"></a>
+</div></section>
+</main>

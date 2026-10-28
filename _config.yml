@@ -1,0 +1,20 @@
+title: CTRL+SEC
+description: Pentest, forense, AppSec, testes em LLM/AI e treinamento.
+url: "https://ctrl-sec.github.io"
+baseurl: ""
+permalink: /blog/:title/
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter_opts:
+    disable: true
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post

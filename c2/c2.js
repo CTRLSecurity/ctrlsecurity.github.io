@@ -21,7 +21,9 @@ pt:{
 'p2.tag':'AI Security','p2.t':'Prompt injection em produção: 5 casos reais','p2.e':'Quando o PDF anexado vira instrução — e o agente obedece. O que encontramos testando assistentes corporativos.',
 'p3.tag':'Forense','p3.t':'A linha do tempo que o atacante tentou apagar','p3.e':'Como reconstruímos 9 dias de acesso a partir de artefatos que sobreviveram à limpeza.',
 'c.eyebrow':'[ §06 ] Próximo movimento','c.h2':['Pronto pra','<em>testar</em> suas','defesas?'],'c.btn':'Agendar diagnóstico gratuito <span class="arr">→</span>','c.note':'resposta em 4h úteis',
-'f.tag':'Cyber security sob medida para times que levam ameaças a sério.','f.svc':'Serviços','f.co':'Empresa','f.careers':'Carreiras','f.contact':'Contato','f.policy':'Política responsável','f.rights':'Todos os direitos reservados'
+'f.tag':'Cyber security sob medida para times que levam ameaças a sério.','f.svc':'Serviços','f.co':'Empresa','f.careers':'Carreiras','f.contact':'Contato','f.policy':'Política responsável','f.rights':'Todos os direitos reservados',
+'bl.eyebrow':'Blog · Publicações','bl.h1':['Do','<em>campo.</em>'],'bl.lead':'Relatórios, guias e notas de campo sobre pentest, AppSec, forense e segurança de LLM/AI.','bl.allf':'Todos',
+'po.back':'← Voltar ao blog','po.prev':'Anterior','po.next':'Próximo','po.ctah':'Quer que a gente teste o seu?','po.ctab':'Fale com um especialista <span class="arr">→</span>'
 },
 en:{
 'nav.services':'Services','nav.method':'Method','nav.manifesto':'Manifesto','nav.blog':'Blog','nav.contact':'Contact','nav.cta':'Talk to an expert <span class="arr">→</span>',
@@ -44,7 +46,9 @@ en:{
 'p2.tag':'AI Security','p2.t':'Prompt injection in production: 5 real cases','p2.e':'When the attached PDF becomes an instruction — and the agent obeys. What we found testing corporate assistants.',
 'p3.tag':'Forensics','p3.t':'The timeline the attacker tried to erase','p3.e':'How we rebuilt 9 days of access from artifacts that survived the cleanup.',
 'c.eyebrow':'[ §06 ] Next move','c.h2':['Ready to','<em>test</em> your','defenses?'],'c.btn':'Book a free diagnosis <span class="arr">→</span>','c.note':'reply within 4 business hours',
-'f.tag':'Bespoke cyber security for teams that take threats seriously.','f.svc':'Services','f.co':'Company','f.careers':'Careers','f.contact':'Contact','f.policy':'Responsible policy','f.rights':'All rights reserved'
+'f.tag':'Bespoke cyber security for teams that take threats seriously.','f.svc':'Services','f.co':'Company','f.careers':'Careers','f.contact':'Contact','f.policy':'Responsible policy','f.rights':'All rights reserved',
+'bl.eyebrow':'Blog · Writing','bl.h1':['From the','<em>field.</em>'],'bl.lead':'Reports, guides and field notes on pentest, AppSec, forensics and LLM/AI security.','bl.allf':'All',
+'po.back':'← Back to blog','po.prev':'Previous','po.next':'Next','po.ctah':'Want us to test yours?','po.ctab':'Talk to an expert <span class="arr">→</span>'
 }};
 
 const TERM={
@@ -57,7 +61,9 @@ en:[['p','$ '],['','ctrlsec dfir --image srv-db01.e01 --mem srv-db01.raw\n'],['d
 };
 
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let lang=localStorage.getItem('ctrlsec-lang')||'pt';
+const B=document.body.dataset,pageLang=B.pageLang;
+let lang=pageLang||localStorage.getItem('ctrlsec-lang')||'pt';
+if(pageLang)localStorage.setItem('ctrlsec-lang',pageLang);
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 
 function render(){
@@ -70,11 +76,14 @@ function render(){
     else el.innerHTML=v;
   });
   buildManifesto();
+  $$('.filters button[data-tag=""]').forEach(b=>b.click());
   $$('.lang').forEach(l=>{l.dataset.l=lang;$$('button',l).forEach(b=>b.classList.toggle('on',b.dataset.lang===lang))});
   restartTerm();
 }
 function setLang(l){
-  if(l===lang)return;lang=l;localStorage.setItem('ctrlsec-lang',l);
+  if(l===lang)return;
+  if(pageLang){localStorage.setItem('ctrlsec-lang',l);location.href=B.altUrl||B.blogUrl||'/';return}
+  lang=l;localStorage.setItem('ctrlsec-lang',l);
   if(reduce){render();return}
   document.body.classList.add('swapping');
   setTimeout(()=>{render();requestAnimationFrame(()=>document.body.classList.remove('swapping'))},250);
@@ -121,19 +130,20 @@ function onScroll(){
   const probe=40;nav.classList.toggle('on-light',lights.some(s=>{const r=s.getBoundingClientRect();return r.top<=probe&&r.bottom>=probe}));
   const m=$('#mani');
   if(m){const r=m.getBoundingClientRect(),vh=innerHeight;const p=Math.min(1,Math.max(0,(vh*.85-r.top)/(r.height+vh*.35)));const ws=$$('.w',m);const n=Math.round(p*ws.length);ws.forEach((w,k)=>w.classList.toggle('lit',reduce||k<n))}
+  const pr=$('.progress');if(pr){const h=document.documentElement.scrollHeight-innerHeight;pr.style.transform='scaleX('+(h>0?Math.min(1,y/h):0)+')'}
   const spot=$('.hero .spot');if(spot&&!reduce)spot.style.transform='translateY('+y*.25+'px)';
 }
 addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);
 
 /* burger */
-$('.burger').addEventListener('click',()=>document.body.classList.toggle('menu-open'));
+const bgr=$('.burger');if(bgr)bgr.addEventListener('click',()=>document.body.classList.toggle('menu-open'));
 $$('.mobile-menu a').forEach(a=>a.addEventListener('click',()=>document.body.classList.remove('menu-open')));
 
 /* hero pointer */
 const hero=$('.hero'),lock=$('.lock');
 if(!reduce&&matchMedia('(pointer:fine)').matches){
-  hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect();const x=e.clientX-r.left,y=e.clientY-r.top;hero.style.setProperty('--mx',x+'px');hero.style.setProperty('--my',y+'px');const nx=x/r.width-.5,ny=y/r.height-.5;lock.style.transform='translate('+nx*-24+'px,'+ny*-24+'px) rotateY('+nx*14+'deg) rotateX('+ny*-14+'deg)'});
-  hero.addEventListener('pointerleave',()=>lock.style.transform='');
+  if(hero&&lock){hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect();const x=e.clientX-r.left,y=e.clientY-r.top;hero.style.setProperty('--mx',x+'px');hero.style.setProperty('--my',y+'px');const nx=x/r.width-.5,ny=y/r.height-.5;lock.style.transform='translate('+nx*-24+'px,'+ny*-24+'px) rotateY('+nx*14+'deg) rotateX('+ny*-14+'deg)'});
+  hero.addEventListener('pointerleave',()=>lock.style.transform='');}
   $$('[data-magnet]').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.transform='translate('+(e.clientX-r.left-r.width/2)*.25+'px,'+(e.clientY-r.top-r.height/2)*.35+'px)'});b.addEventListener('pointerleave',()=>b.style.transform='')});
 }
 
@@ -142,9 +152,11 @@ const hex=()=>Math.random().toString(16).slice(2,8).toUpperCase();
 setInterval(()=>{const a=$('#tel-hash'),b=$('#tel-ping');if(a)a.textContent='0x'+hex();if(b)b.textContent=(8+Math.random()*9).toFixed(1)+'ms'},900);
 
 /* boot */
-$('#year').textContent=new Date().getFullYear();
+/* blog filters */
+$$('.filters').forEach(f=>f.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$$('button',f).forEach(x=>x.classList.toggle('on',x===b));const t=b.dataset.tag;$$('.rows .row').forEach(r=>r.classList.toggle('hide',!!t&&r.dataset.tag!==t))}));
+const yr=$('#year');if(yr)yr.textContent=new Date().getFullYear();
 render();onScroll();
-const boot=()=>setTimeout(()=>document.body.classList.add('ready'),reduce?0:1000);
+const boot=()=>setTimeout(()=>document.body.classList.add('ready'),reduce||!$('#intro')?0:1000);
 if(document.readyState==='complete')boot();else addEventListener('load',boot);
 setTimeout(()=>document.body.classList.add('ready'),2600);
 })();
