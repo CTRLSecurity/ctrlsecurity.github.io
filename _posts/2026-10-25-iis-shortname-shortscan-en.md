@@ -1,64 +1,65 @@
 ---
 lang: en
 ref: iis-shortname-shortscan
-title: "IIS ShortName: from 8.3 enumeration to DLL recovery with shortscan"
-description: "How short names help locate ASP.NET assemblies and when shortscan can recover DLL contents."
+title: "IIS ShortName: from an 8.3 alias to a DLL"
+description: "A /bin directory can look invisible. See how shortscan connects short-name enumeration to verification of an exposed DLL."
 tag: AppSec
 cover: blue
-read: 9
+read: 7
 ---
 
-An 8.3 short name can reveal that a file exists without revealing its full name. In ASP.NET applications, `/bin` is particularly interesting because it holds `.dll` assemblies containing much of the application's logic. But **finding a name**, **reconstructing the full name**, and **retrieving the DLL bytes** are distinct steps. Each needs its own evidence.
+An ASP.NET application returns `404` for `/bin` and for `/bin/Portal.Core.dll`. At first, there seems to be nothing to investigate. But that `404` only tells us the direct route was blocked. It says nothing about whether a DLL exists on disk or whether another route can return it.
 
-## The signal IIS leaks
+This is where IIS short-name enumeration becomes useful, and where a common mistake begins: **finding `PORTAL~1.DLL` is not the same as obtaining `Portal.Core.dll`**. [shortscan](https://github.com/thezakman/shortscan) works across both ends of the investigation. It discovers and reconstructs names, while the version maintained by TheZakMan also checks paths that may return the contents of protected files.
 
-In some configurations, IIS responds differently to a query for an existing 8.3 alias and one for an invented alias. A result such as `PORTAL~1.DLL` suggests a candidate in the queried directory, but does not establish whether its full name is `Portal.Core.dll`, `Portal.Admin.dll`, or something else. Alias generation depends on the volume, creation order, and collisions; guessing the long name from the prefix alone would be a mistake.
+## What the alias actually reveals
 
-[shortscan](https://github.com/thezakman/shortscan) automates this enumeration and tries to reconstruct full names using autocomplete techniques and HTTP confirmation. The original project is by bitquark; the version maintained by TheZakMan extends the workflow to investigate **content retrieval**, including DLLs, when a separate exposure condition exists.
+Windows may keep an 8.3 alias alongside a file's long name. In some configurations, IIS responds differently to queries for existing and invented aliases containing `~`. That difference is an existence oracle. It does not automatically disclose the entire filename: `PORTAL~1.DLL` could have several candidate long names, and the digit after the tilde depends on collisions and file creation order.
 
-## When a name becomes content
+The `/bin` directory adds another layer. ASP.NET normally blocks direct reads, but the NTFS `::$INDEX_ALLOCATION` namespace can make short names inside that directory enumerable. The tool uses that signal to find candidates and attempts to reconstruct long names with HTTP checks. Short-name enumeration and this namespace technique predate the fork; [PT SWARM's research](https://ptswarm.com/blog/source-code-disclosure-in-asp-net-apps/) credits Soroush Dalili for that work.
 
-[Arseniy Sharoglazov's research for PT SWARM](https://ptswarm.com/blog/source-code-disclosure-in-asp-net-apps/) described a specific ASP.NET chain: 8.3 enumeration helps locate files under `/bin`, while a *cookieless* session URL form can make a vulnerable application serve the protected DLL. The research credits Soroush Dalili for the original ShortName work and related scanner. **DLL retrieval does not follow automatically from enumeration**; it depends on ASP.NET behavior and server configuration.
+## The step that changes the impact
 
-In TheZakMan's shortscan version, discovery can feed a source-disclosure check. The tool looks for names in protected directories, attempts to reconstruct them, tests the read path with negative controls, and saves a file only when it receives matching content. A recovered DLL contains compiled code and metadata; retrieving it alone does not mean obtaining the original source files or achieving remote code execution.
+Arseniy Sharoglazov showed that, on vulnerable ASP.NET applications, a URL with *cookieless* session segments can be interpreted in a way that reaches a DLL normally protected by the `/bin` route. The research combined file discovery with content retrieval. This second step depends on ASP.NET version and configuration, including managed-module processing for static requests. **A server may allow 8.3 enumeration while still blocking DLL retrieval.**
 
-## A more useful investigation flow
+TheZakMan's shortscan version incorporates this check into the investigation flow. Instead of stopping at “an alias exists,” it can proceed to a confirmed long name, test a disclosure route with negative controls, and save recovered bytes under `--loot-dir` when the read succeeds. It also offers `--source-probe` for a full name already known. This retrieves a compiled assembly, not the original C# files; subsequent binary analysis may still reveal application logic, names, and other useful data.
 
-In an authorized test environment, start by checking for a ShortName signal. The current flag is `--is-vuln`:
+## A laboratory walkthrough
 
-```sh
-shortscan --is-vuln https://iis.example.test/
-```
-
-If the differential is stable, investigate `/bin`. The `-i` mode includes directory-index namespace enumeration and the disclosure check; `--full-url` helps record discovered paths:
+This example is **hypothetical**. The names below are not output from a real assessment. In an authorized environment, a scan focused on the protected directory can start like this:
 
 ```sh
-shortscan https://iis.example.test/bin -i \
-  --autocomplete method --full-url \
-  --loot-dir ./shortscan-evidence
+shortscan https://lab.example.test/bin -i \
+  --full-url --loot-dir ./shortscan-loot
 ```
 
-If a full name has already been confirmed independently, test it directly instead of presenting a guess as a discovery:
+Interpret the result in stages:
+
+| Observation | Supported conclusion |
+| --- | --- |
+| An alias such as `PORTAL~1.DLL` responds differently from a nonexistent alias in the same directory. | There is an 8.3 candidate. No long name or content read has been established. |
+| `Portal.Core.dll` is reconstructed and confirmed by a specific response. | There is a plausible long name associated with the file. Its exact association with ordinal `~1` still needs separate proof. |
+| The disclosure route returns `MZ` bytes from a PE while nonexistent-name controls fail. | There is evidence of a DLL read. Preserve and check the content and file identity. |
+
+If the long name came from another reliable source, isolate the read check:
 
 ```sh
 shortscan --source-probe \
-  https://iis.example.test/bin/Portal.Core.dll \
-  --loot-dir ./shortscan-evidence
+  https://lab.example.test/bin/Portal.Core.dll \
+  --loot-dir ./shortscan-loot
 ```
 
-The names and domain above are fictional. `--source-probe` demonstrates exposure only when a response contains the expected bytes and nonexistent-file controls do not behave the same way. A patched installation may allow name enumeration while refusing every DLL retrieval attempt.
+A `200` response alone does not close the case: custom error pages and generic responses can also return `200`. The saved file should contain DLL-compatible bytes, and a nonexistent name of the same shape must not produce the same result. Record the direct path, alias, alternative route, and controls separately.
 
-## Report the result precisely
+## What belongs in the report
 
-1. **8.3 differential:** retain the candidate request and a nonexistent control in the same directory, with equivalent session, method, and headers.
-2. **Long name:** state whether a verifiable response confirmed it or whether it remains a hypothesis. Do not assign a `~1` ordinal to a long name without confirmation.
-3. **Content:** to claim disclosure, preserve the response containing the DLL, negative controls, and observed file type. An HTTP status alone is insufficient.
+A ShortName finding may only disclose names. A DLL read is a different finding with its own prerequisites and impact. Report the observed sequence, relevant configuration, and response evidence containing the bytes. Do not present the possibility of decompiling an assembly as proof of repository access or remote execution.
 
-For remediation, address the two issues separately. Review the creation and presence of 8.3 aliases on the volume, assessing impact before removing them. Keep IIS and ASP.NET Framework updated, and inspect the module and *cookieless* session configuration that permits reads from protected directories. Disabling new aliases does not remove existing ones; preventing enumeration does not replace fixing a route that actually serves DLLs.
+For remediation, examine both existing 8.3 aliases and the ASP.NET read route. Disabling the creation of new aliases does not remove old ones; blocking enumeration does not fix a configuration that still serves DLLs through another route. Update IIS and ASP.NET Framework, and assess impact before removing 8.3 names from volumes in use.
 
 ## References
 
-- [shortscan: source, usage, and credits](https://github.com/thezakman/shortscan)
+- [shortscan: implementation, options, and credits](https://github.com/thezakman/shortscan)
 - [PT SWARM: Source Code Disclosure in ASP.NET apps](https://ptswarm.com/blog/source-code-disclosure-in-asp-net-apps/)
-- [Microsoft: file naming and 8.3 aliases](https://learn.microsoft.com/en-us/windows/win32/FileIO/naming-a-file)
+- [Microsoft: 8.3 aliases on Windows](https://learn.microsoft.com/en-us/windows/win32/FileIO/naming-a-file)
 - [Microsoft: fsutil 8dot3name](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/fsutil-8dot3name)

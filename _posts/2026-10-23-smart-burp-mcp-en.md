@@ -1,38 +1,58 @@
 ---
 lang: en
 ref: smart-burp-mcp
-title: "Smart Burp MCP: from HTTP capture to traceable evidence"
-description: "How Smart Burp MCP Server connects AI clients to Burp with compact search, native IDs, and reviewed request sends."
+title: "Smart Burp MCP: an investigation you can audit"
+description: "A Burp triage example shows how Smart Burp MCP preserves context, compares controls, and keeps each action traceable."
 tag: Tools
 cover: dark
 read: 7
 ---
 
-An investigation in Burp starts with many messages and ends with a small set of relevant evidence. Between those points, context is easy to lose: copying a response without its request, mixing up two Repeater tabs, or treating an HTTP status as sufficient proof.
+Burp Proxy has collected hundreds of requests. One appears to show access to another user's invoice. The response has a `200`, but that is not yet a finding: perhaps the invoice is public, the user has permission, or an error page uses the wrong status code. Before writing a conclusion, the analyst needs the right message, comparable controls, and a record of what was actually observed.
 
-[Smart Burp MCP Server](https://github.com/thezakman/smart-mcp-server), developed by TheZakMan from PortSwigger's official MCP Server, connects Burp Suite to MCP clients such as Codex and Claude. It aims to make triage **more traceable and controlled**. The extension works with traffic already captured by Burp, exposes compact indexes, and retrieves message details only when needed.
+This problem shapes [Smart Burp MCP Server](https://github.com/thezakman/smart-mcp-server). The extension built by TheZakMan from PortSwigger's MCP server connects clients such as Codex and Claude to Burp's state. Its distinctive workflow combines **compact indexes to locate traffic, native IDs to return to the exact message, and explicit operations to compare evidence or send one reviewed request**.
 
-## An investigation in five steps
+## From suspicion to the right exchange
 
-**1. Narrow the traffic.** Filter Proxy history by host, path, method, status, color, or scope. A short metadata list helps find candidates without loading every response body into the client's context.
+Consider a **fictional** test of `/api/invoices/`. First, search metadata without loading response bodies and credentials into the client's context:
 
-**2. Keep native IDs.** Proxy results carry Burp's identifier. Retrieve the request and response by the same ID, using bounded chunks for large messages. This is more reliable than citing a list position that can change with filters and new captures.
+```json
+{"hostContains":"api.lab.test","pathPrefix":"/api/invoices/","methods":["GET"],"fields":["id","method","path","statusCode"],"count":10}
+```
 
-**3. Compare controls.** Put anonymous, invalid-credential, and valid-credential responses side by side. The comparison tools expose differences in status, headers, and JSON keys, but interpretation remains a human task: a status change alone does not confirm unauthorized access.
+These are arguments for `search_http_history`. The result might point to IDs `105` and `112`. They are Burp history IDs, not temporary positions in a filtered list. Ask `get_http_exchange` for only the request and response of `112`, cap the returned size, and follow `nextOffset` if the message is large:
 
-**4. Preserve context.** Open a captured message in Repeater or save evidence in Organizer with notes and colors. Creating a tab does not send target traffic. Smart Burp MCP can also inspect current Repeater states and labels association confidence when the origin of a send is uncertain.
+```json
+{"id":112,"parts":["REQUEST","RESPONSE"],"maxMessageChars":8000}
+```
 
-**5. Review before sending.** For a request change, the extension displays the complete message and hashes the preview with SHA-256. Sending requires the matching preview and target approval. It sends one request at a time, without automatic batching or retries.
+The question is now concrete: which identity sent the request, which resource did it ask for, and what data did the response actually contain? A summary with `200` cannot answer that. The full exchange can, when interpreted alongside resource ownership and comparable controls.
 
-## Why the workflow matters
+## Compare before concluding
 
-The useful part is not asking a model to "find vulnerabilities" on its own. It is using the client to navigate evidence, form hypotheses, and compare controls while Burp retains original traffic and IDs. The extension offers read-only investigation, core, and full compatibility tool profiles. It also supports Site Map, WebSocket history, Organizer, and Repeater and Intruder traffic workflows.
+Suppose `105` is the owner's access to the invoice and `112` is access from another account. `compare_http_exchanges` compares the two captured responses without creating new target traffic:
 
-For connectivity, it provides a local Streamable HTTP endpoint at `/mcp`, with SSE and stdio proxy compatibility. Some features, including Scanner and Collaborator, require Burp Suite Professional. Captured content can contain cookies and tokens: masking is optional and tool-specific. Check scope and returned data before sharing a message with an AI client.
+```json
+{"leftSource":"PROXY","leftId":105,"rightSource":"PROXY","rightId":112}
+```
 
-The open-source repository documents installation, profiles, limits, and examples. Start with its README, select a read-only profile to explore the indexes, and move to sending operations when the exact request and target are clear.
+The comparison helps locate differences in status, headers, and JSON fields. The analyst still has to establish that account `112` had no legitimate right to the resource and that the body contained invoice data rather than a generic envelope. Anonymous and invalid-credential requests provide further controls; Smart Burp MCP has a dedicated comparison for the anonymous, invalid-token, and valid-token trio. A report should retain the IDs and request/response pairs that support each claim.
+
+This is the advantage over pasting messages into a chat: the client starts from a small index, opens only relevant items, and can return to the original Burp record. The extension also covers Site Map, Organizer, and observed Repeater and Intruder traffic. A Repeater tab association may be exact, probable, or ambiguous; the extension reports that confidence instead of inventing a source when two tabs contain identical requests.
+
+## When the test needs an action
+
+Reading history, comparing responses, and opening a captured request in Repeater do not send anything to the target. Testing a changed request is a different step: `preview_request_mutation` renders the complete request and returns its SHA-256; `send_mutated_request` accepts only the version matching that preview, applies target approval, and sends one request at a time. The response can be retrieved by exchange ID and saved in Organizer. The transition from analysis to new traffic remains visible.
+
+The extension also offers managed WebSocket sessions. It opens a Burp-approved connection, sends one reviewed frame at a time, lets the client inspect received messages, and closes the session explicitly. This extends the same traceable workflow beyond HTTP without turning an investigation into automated payload delivery.
+
+## Limits that matter
+
+Captured content is returned without masking by default, including cookies and tokens. Masking is optional and cannot cover every format. Tool profiles reduce the capabilities exposed to a client; the read-only profile offers no sending tools. Some features require Burp Suite Professional. Observed Repeater states are not Burp's complete internal navigation history.
+
+Smart Burp MCP shortens the path from a hypothesis to its evidence, but it does not decide whether a vulnerability exists. That conclusion still requires controls, authorization context, and the actual response. The extension helps keep those elements tied to the original message, which is the hardest part to preserve when an investigation moves through an AI client.
 
 ## References
 
-- [Smart Burp MCP Server: repository and documentation](https://github.com/thezakman/smart-mcp-server)
+- [Smart Burp MCP Server: source and documentation](https://github.com/thezakman/smart-mcp-server)
 - [PortSwigger MCP Server: upstream project](https://github.com/PortSwigger/mcp-server)

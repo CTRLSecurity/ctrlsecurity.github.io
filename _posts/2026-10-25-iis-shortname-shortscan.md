@@ -1,64 +1,65 @@
 ---
 lang: pt
 ref: iis-shortname-shortscan
-title: "IIS ShortName: da enumeração 8.3 à recuperação de DLLs com shortscan"
-description: "Como nomes curtos ajudam a encontrar assemblies ASP.NET e quando o shortscan consegue recuperar uma DLL."
+title: "IIS ShortName: do alias 8.3 à DLL"
+description: "Um diretório /bin pode parecer invisível. Veja como o shortscan liga a enumeração de nomes curtos à verificação de uma DLL exposta."
 tag: AppSec
 cover: blue
-read: 9
+read: 7
 ---
 
-Um nome curto 8.3 pode revelar que um arquivo existe sem revelar seu nome completo. Em aplicações ASP.NET, isso interessa especialmente no diretório `/bin`, onde ficam assemblies `.dll` com parte da lógica da aplicação. Mas há uma diferença decisiva entre **descobrir um nome**, **reconstruir o nome completo** e **obter os bytes da DLL**. Cada etapa exige evidência própria.
+Uma aplicação ASP.NET responde `404` para `/bin` e também para `/bin/Portal.Core.dll`. A primeira impressão é de que não há nada para investigar. Mas esse `404` só mostra que a rota direta foi bloqueada. Ele não diz se existe uma DLL no disco, nem se outra forma de acesso pode devolvê-la.
 
-## O sinal que o IIS deixa escapar
+É nesse intervalo que a enumeração de nomes curtos do IIS se torna útil. E é também onde costuma surgir uma confusão: **encontrar `PORTAL~1.DLL` não é o mesmo que obter `Portal.Core.dll`**. O [shortscan](https://github.com/thezakman/shortscan) trabalha nas duas pontas dessa investigação: revela e reconstrói nomes, e a versão mantida por TheZakMan também verifica caminhos que podem entregar o conteúdo de arquivos protegidos.
 
-Em certas configurações, o IIS responde de maneira diferente a consultas sobre um alias 8.3 existente e sobre um alias inventado. Um resultado como `PORTAL~1.DLL` indica um candidato no diretório consultado, mas não diz, sozinho, se o arquivo se chama `Portal.Core.dll`, `Portal.Admin.dll` ou outra coisa. A geração de aliases depende do volume, da ordem de criação e de colisões; inferir o nome longo apenas pelo prefixo seria um erro.
+## O que o alias realmente revela
 
-O [shortscan](https://github.com/thezakman/shortscan) automatiza essa enumeração e tenta reconstruir nomes completos com técnicas de autocomplete e confirmação por HTTP. O projeto original é de bitquark; a versão mantida por TheZakMan amplia o fluxo para investigar também **recuperação de conteúdo**, inclusive DLLs, quando uma segunda condição de exposição está presente.
+O Windows pode manter um alias 8.3 ao lado do nome longo de um arquivo. Em algumas configurações, respostas do IIS a consultas com `~` diferem entre aliases existentes e inventados. Essa diferença funciona como um oráculo de existência. Ela não revela automaticamente o nome inteiro: `PORTAL~1.DLL` poderia corresponder a mais de um nome longo, e o número após o til depende de colisões e da ordem de criação dos arquivos.
 
-## Quando o nome vira conteúdo
+O diretório `/bin` adiciona outra camada. O ASP.NET costuma impedir sua leitura direta, mas o namespace NTFS `::$INDEX_ALLOCATION` pode permitir a enumeração de nomes curtos dentro dele. A ferramenta usa esse sinal para descobrir candidatos e tenta reconstruir o nome longo com verificações por HTTP. A técnica de enumeração e o uso desse namespace antecedem o fork; a [pesquisa da PT SWARM](https://ptswarm.com/blog/source-code-disclosure-in-asp-net-apps/) credita esse trabalho a Soroush Dalili.
 
-A [pesquisa de Arseniy Sharoglazov para a PT SWARM](https://ptswarm.com/blog/source-code-disclosure-in-asp-net-apps/) mostrou uma cadeia específica em ASP.NET: a enumeração 8.3 ajuda a localizar arquivos em `/bin`, enquanto uma forma de URL com sessões *cookieless* pode fazer uma aplicação vulnerável entregar a DLL protegida. A pesquisa atribui os estudos iniciais de ShortName e o scanner relacionado a Soroush Dalili. **A leitura da DLL não decorre automaticamente da enumeração**; depende do comportamento do ASP.NET e da configuração do servidor.
+## O passo que muda o impacto
 
-Na versão do shortscan mantida por TheZakMan, a descoberta pode alimentar uma verificação de *source disclosure*. A ferramenta procura nomes em diretórios protegidos, tenta reconstruí-los, testa a rota de leitura com controles negativos e só salva um arquivo quando recebe conteúdo compatível. Uma DLL recuperada contém código compilado e metadados; sua obtenção não significa, por si só, acesso ao código-fonte original nem execução remota.
+Arseniy Sharoglazov mostrou que, em aplicações ASP.NET vulneráveis, uma URL com segmentos de sessão *cookieless* pode ser interpretada de modo a alcançar uma DLL que a rota `/bin` normalmente protege. A pesquisa combinou a descoberta do arquivo com a leitura do seu conteúdo. Essa segunda etapa depende da versão e configuração do ASP.NET, incluindo o processamento de módulos gerenciados para requisições estáticas. **Um servidor pode permitir enumeração 8.3 e ainda bloquear a leitura da DLL.**
 
-## Um fluxo de investigação mais útil
+A versão de TheZakMan do shortscan incorpora essa verificação ao fluxo de investigação. Em vez de parar em “existe um alias”, ela pode seguir até um nome longo confirmado, testar a rota de disclosure com controles negativos e guardar os bytes recuperados em `--loot-dir` quando a leitura funciona. Há ainda `--source-probe` para testar um nome completo já conhecido. Isso recupera um assembly compilado, não os arquivos originais de C#; a análise posterior do binário pode, porém, revelar lógica, nomes e outros dados úteis.
 
-Em um ambiente de teste autorizado, comece pelo sinal de ShortName. A flag atual é `--is-vuln`:
+## Como ficaria em um laboratório
 
-```sh
-shortscan --is-vuln https://iis.example.test/
-```
-
-Se houver um diferencial estável, investigue `/bin`. O modo `-i` inclui a enumeração pelo namespace de índice do diretório e a cadeia de verificação de disclosure; `--full-url` ajuda a registrar os caminhos encontrados:
+Este exemplo é **hipotético**. Os nomes abaixo não são saída de uma avaliação real. Em um ambiente autorizado, uma varredura direcionada ao diretório protegido pode ser iniciada assim:
 
 ```sh
-shortscan https://iis.example.test/bin -i \
-  --autocomplete method --full-url \
-  --loot-dir ./evidencias-shortscan
+shortscan https://lab.example.test/bin -i \
+  --full-url --loot-dir ./loot-shortscan
 ```
 
-Se um nome longo já foi confirmado por outro meio, a verificação pode ser feita diretamente, sem confundir um palpite com uma descoberta:
+O resultado precisa ser lido em etapas:
+
+| Observação | O que permite concluir |
+| --- | --- |
+| Um alias como `PORTAL~1.DLL` responde diferente de um alias inexistente no mesmo diretório. | Há um candidato 8.3. Ainda não há nome longo nem leitura de conteúdo. |
+| `Portal.Core.dll` é reconstruído e confirmado por uma resposta específica. | Há um nome longo plausivelmente associado ao arquivo. A associação exata ao ordinal `~1` ainda exige prova própria. |
+| A rota de disclosure devolve bytes `MZ` de um PE, enquanto controles de nomes inexistentes falham. | Há evidência de leitura da DLL. O conteúdo e a identidade do arquivo ainda precisam ser preservados e conferidos. |
+
+Se o nome longo vier de outra fonte confiável, a etapa de leitura pode ser isolada:
 
 ```sh
 shortscan --source-probe \
-  https://iis.example.test/bin/Portal.Core.dll \
-  --loot-dir ./evidencias-shortscan
+  https://lab.example.test/bin/Portal.Core.dll \
+  --loot-dir ./loot-shortscan
 ```
 
-Os nomes e o domínio acima são fictícios. `--source-probe` só demonstra exposição quando a resposta traz os bytes esperados e os controles de arquivo inexistente não reproduzem o mesmo resultado. Em uma instalação corrigida, a cadeia pode enumerar nomes e ainda assim não recuperar nenhuma DLL.
+Uma resposta `200` sozinha não fecha o caso: páginas de erro customizadas e respostas genéricas também podem retornar `200`. O arquivo salvo deve ter conteúdo compatível com uma DLL, e um nome inexistente de mesma forma não pode produzir o mesmo resultado. O caminho direto, o alias, a rota alternativa e os controles devem ser registrados separadamente.
 
-## Como relatar sem inflar o resultado
+## O que fica no relatório
 
-1. **Diferencial 8.3:** registre a requisição candidata e uma inexistente no mesmo diretório, com sessão, método e headers equivalentes.
-2. **Nome longo:** marque se foi confirmado por uma resposta verificável ou se continua sendo hipótese. O ordinal `~1` também não deve ser atribuído a um nome longo sem confirmação.
-3. **Conteúdo:** para afirmar disclosure, preserve a resposta que devolveu a DLL, os controles negativos e o tipo de arquivo observado. Um status HTTP isolado não basta.
+O achado de ShortName pode ser apenas divulgação de nomes. A leitura da DLL é um achado diferente, com pré-requisitos e impacto próprios. Relate a sequência observada, a configuração relevante e a evidência da resposta que trouxe os bytes. Não trate a possibilidade de decompilar um assembly como prova de acesso ao repositório ou de execução remota.
 
-Para corrigir, trate separadamente os dois problemas. Revise a criação e a presença de aliases 8.3 no volume, considerando o impacto antes de removê-los. Mantenha IIS e ASP.NET Framework atualizados e verifique a configuração de módulos e sessões *cookieless* que permite a leitura dos diretórios protegidos. Desativar novos aliases não apaga os existentes; impedir a enumeração também não substitui a correção de uma rota que efetivamente entrega DLLs.
+Na correção, examine tanto os aliases 8.3 existentes quanto a rota de leitura do ASP.NET. Desativar a criação de novos aliases não remove os antigos; bloquear a enumeração não corrige uma configuração que ainda entrega DLLs por outro caminho. Atualize IIS e ASP.NET Framework e avalie o impacto antes de remover nomes 8.3 de volumes em uso.
 
 ## Referências
 
-- [shortscan: código, uso e créditos](https://github.com/thezakman/shortscan)
+- [shortscan: implementação, opções e créditos](https://github.com/thezakman/shortscan)
 - [PT SWARM: Source Code Disclosure in ASP.NET apps](https://ptswarm.com/blog/source-code-disclosure-in-asp-net-apps/)
-- [Microsoft: nomes de arquivos e aliases 8.3](https://learn.microsoft.com/en-us/windows/win32/FileIO/naming-a-file)
+- [Microsoft: aliases 8.3 no Windows](https://learn.microsoft.com/en-us/windows/win32/FileIO/naming-a-file)
 - [Microsoft: fsutil 8dot3name](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/fsutil-8dot3name)
