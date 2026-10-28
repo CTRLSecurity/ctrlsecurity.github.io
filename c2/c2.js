@@ -19,7 +19,7 @@ pt:{
 'b.eyebrow':'[ §05 ] Publicações','b.h2':'Do campo.','b.all':'Arquivo completo <span class="arr">→</span>','b.read':'de leitura',
 'c.eyebrow':'[ §06 ] Próximo movimento','c.h2':['Pronto pra','<em>testar</em> suas','defesas?'],'c.btn':'Agendar diagnóstico gratuito <span class="arr">→</span>','c.note':'resposta em 4h úteis',
 'f.tag':'Cyber security sob medida para times que levam ameaças a sério.','f.svc':'Serviços','f.co':'Empresa','f.careers':'Carreiras','f.contact':'Contato','f.policy':'Política responsável','f.rights':'Todos os direitos reservados',
-'bl.eyebrow':'Blog · Publicações','bl.h1':['Do','<em>campo.</em>'],'bl.lead':'Relatórios, guias e notas de campo sobre pentest, AppSec, forense e segurança de LLM/AI.','bl.allf':'Todos',
+'bl.eyebrow':'Blog · Publicações','bl.h1':['Do','<em>campo.</em>'],'bl.lead':'Guias técnicos sobre IIS, segurança de LLM/AI e ferramentas para investigar aplicações com mais rigor.','bl.allf':'Todos',
 'po.back':'← Voltar ao blog','po.prev':'Anterior','po.next':'Próximo','po.ctah':'Quer que a gente teste o seu?','po.ctab':'Fale com um especialista <span class="arr">→</span>'
 },
 en:{
@@ -41,7 +41,7 @@ en:{
 'b.eyebrow':'[ §05 ] Writing','b.h2':'From the field.','b.all':'Full archive <span class="arr">→</span>','b.read':'read',
 'c.eyebrow':'[ §06 ] Next move','c.h2':['Ready to','<em>test</em> your','defenses?'],'c.btn':'Book a free diagnosis <span class="arr">→</span>','c.note':'reply within 4 business hours',
 'f.tag':'Bespoke cyber security for teams that take threats seriously.','f.svc':'Services','f.co':'Company','f.careers':'Careers','f.contact':'Contact','f.policy':'Responsible policy','f.rights':'All rights reserved',
-'bl.eyebrow':'Blog · Writing','bl.h1':['From the','<em>field.</em>'],'bl.lead':'Reports, guides and field notes on pentest, AppSec, forensics and LLM/AI security.','bl.allf':'All',
+'bl.eyebrow':'Blog · Writing','bl.h1':['From the','<em>field.</em>'],'bl.lead':'Technical guides on IIS, LLM/AI security, and tools for investigating applications with more rigor.','bl.allf':'All',
 'po.back':'← Back to blog','po.prev':'Previous','po.next':'Next','po.ctah':'Want us to test yours?','po.ctab':'Talk to an expert <span class="arr">→</span>'
 }};
 
